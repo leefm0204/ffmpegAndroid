@@ -14,7 +14,6 @@ ENABLED_CONFIG="\
 		--enable-avutil \
   		--enable-swscale \
 		--enable-swresample \
-		--enable-libfdk-aac \
 		--enable-static \
 		--enable-libdav1d \
 		--enable-muxer=wav,mp4,matroska,webm,mp3,adts,flac,ogg,opus,mpegts,hls,dash,segment \
