@@ -15,7 +15,6 @@ ENABLED_CONFIG="\
   		--enable-swscale \
 		--enable-swresample \
 		--enable-static \
-		--enable-libdav1d \
 		--enable-muxer=wav,mp4,matroska,webm,mp3,adts,flac,ogg,opus,mpegts,hls,dash,segment \
     	--enable-demuxer=* \
 	 	--enable-encoder=mjpeg \
