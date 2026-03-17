@@ -31,6 +31,9 @@ DISABLED_CONFIG="\
 		--disable-small \
 		--disable-zlib \
  		--disable-avfilter \
+		--disable-asm \
+        --disable-neon \
+        --disable-inline-asm \
 		--disable-v4l2-m2m \
 		--disable-cuda-llvm \
 		--disable-indevs \
@@ -189,10 +192,6 @@ for ARCH in "${ARCH_LIST[@]}"; do
             CROSS_PREFIX="$ANDROID_NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/$TARGET_ABI-linux-android${ANDROID_API_LEVEL}-"
             EXTRA_CFLAGS="-O2 -march=$TARGET_CPU -fomit-frame-pointer"
 	        EXTRA_CXXFLAGS="-O2 -march=$TARGET_CPU -fomit-frame-pointer"
-     
-            EXTRA_CONFIG="\
-	    	      	--enable-asm \
-            		--enable-neon "
             ;;
         "armv7-a"|"armeabi-v7a"|"armv7a")
             echo -e "\e[1;32m$ARCH Libraries\e[0m"
