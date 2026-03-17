@@ -2,7 +2,7 @@
 
 ### Describe Your Target Android Api or Architectures ###
 ANDROID_API_LEVEL="25"
-ARCH_LIST=("armv8a" "armv7a" "x86" "x86-64")
+ARCH_LIST=("armv8a")
 
 
 ### Supported Architectures "armv8a" "armv7a" "x86" "x86-64"  ####### 
@@ -14,6 +14,8 @@ ENABLED_CONFIG="\
 		--enable-avutil \
   		--enable-swscale \
 		--enable-swresample \
+		--enable-libfdk-aac
+		--enable-static \
 		--enable-libdav1d \
 		--enable-muxer=wav,mp4,matroska,webm,mp3,adts,flac,ogg,opus,mpegts,hls,dash,segment \
     	--enable-demuxer=* \
@@ -21,6 +23,7 @@ ENABLED_CONFIG="\
 		--enable-decoder=h264,hevc,vp8,vp9,libdav1d,flv,vp6f,adpcm_swf,mpeg4,wmv3,mpeg1video,mpeg2video,mpeg2audio,msmpeg4v2,msmpeg4v3,theora,amrnb,amrwb,dvvideo,h263,mjpeg,png,jpeg,bmp,webp,mp3,aac,ac3,eac3,flac,opus,vorbis,pcm_s16le,pcm_s24le,alac,wma,ass,ssa,mov_text,subrip,webvtt,dvbsub,dvdsub,pgssub \
 		--enable-parser=* \
   		--enable-bsf=* \
+		--enable-pic \
 		--enable-shared "
 
 
@@ -35,7 +38,6 @@ DISABLED_CONFIG="\
 		--disable-libxml2 \
 		--disable-avdevice \
 		--disable-network \
-		--disable-static \
 		--disable-debug \
 		--disable-ffplay \
   		--disable-ffprobe \
