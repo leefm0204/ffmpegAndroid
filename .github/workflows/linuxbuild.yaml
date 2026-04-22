@@ -1,103 +1,42 @@
-name: Build FFmpeg for Linux ARM64 (Cross)
+name: Build FFmpeg for Linux ARM64
 
 on:
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-22.04  # GitHub ARM64 runner available
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install toolchain
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          gcc-aarch64-linux-gnu \
-          g++-aarch64-linux-gnu \
-          meson ninja-build \
-          pkg-config \
-          autoconf automake libtool \
-          nasm git
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential meson ninja-build \
+            pkg-config autoconf automake libtool yasm nasm
 
-    - name: Clone sources
-      run: |
-        git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg
-        git clone https://code.videolan.org/videolan/dav1d.git
+      - name: Clone latest FFmpeg
+        run: |
+          git clone https://github.com/FFmpeg/FFmpeg.git ffmpeg
+          echo "FFMPEG_SOURCE_DIR=$GITHUB_WORKSPACE/ffmpeg" >> $GITHUB_ENV
 
-    - name: Build dav1d (cross)
-      run: |
-        cd dav1d
+      - name: Create build directory
+        run: |
+          mkdir -p ffmpeg-build
+          echo "FFMPEG_BUILD_DIR=$GITHUB_WORKSPACE/ffmpeg-build" >> $GITHUB_ENV
 
-        cat > cross.txt <<EOF
-[binaries]
-c = 'aarch64-linux-gnu-gcc'
-cpp = 'aarch64-linux-gnu-g++'
-ar = 'aarch64-linux-gnu-ar'
-strip = 'aarch64-linux-gnu-strip'
-pkgconfig = 'pkg-config'
+      - name: Run build script
+        run: |
+          chmod +x ./linux-arm64.sh
+          ./linux-arm64.sh
 
-[host_machine]
-system = 'linux'
-cpu_family = 'aarch64'
-cpu = 'aarch64'
-endian = 'little'
-EOF
-
-        meson setup build \
-          --cross-file cross.txt \
-          --prefix=$GITHUB_WORKSPACE/build \
-          --default-library=static \
-          -Denable_tests=false
-
-        ninja -C build
-        ninja -C build install
-
-    - name: Build FFmpeg (cross)
-      run: |
-        export PKG_CONFIG_PATH="$GITHUB_WORKSPACE/build/lib/pkgconfig"
-
-        cd ffmpeg
-
-        ./configure \
-          --prefix="$GITHUB_WORKSPACE/build" \
-          --target-os=linux \
-          --arch=aarch64 \
-          --enable-cross-compile \
-          --cross-prefix=aarch64-linux-gnu- \
-          --cc=aarch64-linux-gnu-gcc \
-          --cxx=aarch64-linux-gnu-g++ \
-          \
-          --enable-gpl \
-          --enable-libdav1d \
-          --enable-static \
-          --disable-shared \
-          --disable-debug \
-          --disable-doc \
-          --disable-everything \
-          \
-          --enable-avcodec \
-          --enable-avformat \
-          --enable-avutil \
-          --enable-swscale \
-          --enable-swresample \
-          \
-          --enable-decoder=h264,hevc,vp8,vp9,av1 \
-          --enable-parser=h264,hevc,vp9,av1 \
-          --enable-demuxer=mov,matroska,webm \
-          \
-          --extra-cflags="-O3 -march=armv8-a -fPIC" \
-          --extra-ldflags="-L$GITHUB_WORKSPACE/build/lib"
-
-        make -j$(nproc)
-        make install
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ffmpeg-linux-arm64
-        path: build/
+      - name: Upload FFmpeg build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-linux-arm64-build
+          path: ffmpeg-build/
