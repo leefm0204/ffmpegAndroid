@@ -32,8 +32,8 @@ jobs:
 
       - name: Run build script
         run: |
-          chmod +x ./linux-arm64.sh
-          ./linux-arm64.sh
+          chmod +x ./linuxarm64.sh
+          ./linuxarm64.sh
 
       - name: Upload FFmpeg build artifacts
         uses: actions/upload-artifact@v4
