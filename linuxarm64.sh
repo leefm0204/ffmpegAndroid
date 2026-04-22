@@ -8,6 +8,7 @@ ENABLED_CONFIG="
     --enable-avcodec
     --enable-avformat
     --enable-avutil
+    --enable-cross-compile
     --enable-swscale
     --enable-swresample
     --enable-static
